@@ -46,6 +46,8 @@ public class Book {
 
     // Checks in a book
     public void checkIn(){
+        isCheckedOut = false;
+        checkedOutTo = "";
 
     }
     // Checks out a book

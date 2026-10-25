@@ -7,6 +7,11 @@ public class NeighborhoodLibrary {
 
         initializeLibrary();
 
+        System.out.printf("What would you like to do?%n%n");
+        System.out.println("1 - Show available books");
+        System.out.println("2 - Show checked out books");
+        System.out.println("3 - Exit");
+
 
     }
 
