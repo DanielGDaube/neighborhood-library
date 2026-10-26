@@ -11,6 +11,7 @@ public class Book {
     public Book(int id, String isbn, String title, boolean isCheckedOut, String checkedOutTO) {
         this.id = id;
         this.isbn = isbn;
+        this.title = title;
         this.isCheckedOut = isCheckedOut;
         this.checkedOutTo = checkedOutTO;
     }
@@ -19,7 +20,7 @@ public class Book {
     public int getId() {return id;}
     public String getIsbn() {return isbn;}
     public String getTitle() {return title;}
-    public boolean isCheckedOut() {return isCheckedOut;}
+    public boolean getCheckedOut() {return isCheckedOut;}
     public String getCheckedOutTo() {return checkedOutTo;}
 
     // Setter methods
@@ -56,5 +57,9 @@ public class Book {
         checkedOutTo = "name";
 
     }
+    @Override
+    public String toString(){
+        return id + "  " + isbn + "  " + title;
 
+    }
 }

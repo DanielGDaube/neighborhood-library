@@ -1,18 +1,32 @@
 package com.pluralsight;
 
+import java.util.Scanner;
+
 public class NeighborhoodLibrary {
+    static Scanner libraryScanner = new Scanner(System.in);
     // Creates an array with 20 slots
     private static Book [] library = new Book[20];
     public static void main(String[] args) {
 
         initializeLibrary();
 
-        System.out.printf("What would you like to do?%n%n");
-        System.out.println("1 - Show available books");
-        System.out.println("2 - Show checked out books");
-        System.out.println("3 - Exit");
+        // Loop that displays menu screen
+        boolean condition = true;
+        while (condition) {
 
+            System.out.println("--------------------------");
+            System.out.printf("What would you like to do?%n%n");
+            System.out.println("1 - Show available books");
+            System.out.println("2 - Show checked out books");
+            System.out.println("3 - Exit");
+            System.out.println("--------------------------");
 
+            switch (libraryScanner.nextInt()) {
+                case 1 -> showAvailableBooks();
+                case 2 -> showCheckedOutBooks();
+                case 3 -> condition = false;
+            }
+        }
     }
 
     // Preloads the array with entered books
@@ -28,7 +42,7 @@ public class NeighborhoodLibrary {
         library[8] = new Book(9,"978-0-59-372625-9", "Hollow Bones",false, "");
         library[9] = new Book(10,"978-0-59-382026-1","Carl's Doomsday Scenario", false, "");
         library[10] = new Book(11,"978-1-25-028454-9", "Mad Mabel",false, "");
-        library[11] = new Book(12,"9781597804332", "Other Worlds Than These", false, "");
+        library[11] = new Book(12,"978-1-59-780433-2", "Other Worlds Than These", false, "");
         library[12] = new Book(13,"978-0-06-351163-7", "Whistler",false, "");
         library[13] = new Book(14,"978-0-59-380421-6", "Yesteryear",false, "");
         library[14] = new Book(15,"978-1-46-429854-7","Brain Damage", false, "");
@@ -37,5 +51,35 @@ public class NeighborhoodLibrary {
         library[17] = new Book(18,"979-8-21-719235-9","Bound and Unbound", false, "");
         library[18] = new Book(19,"978-0-34-553980-9","Red Rising", false, "");
         library[19] = new Book(20,"978-1-64-937929-0","Fourth Wing", false, "");
+    }
+    public static void showAvailableBooks(){
+        int available = 0;
+        System.out.println("ID ISBN              Title");
+        for (Book book : library) {
+            if (!book.getCheckedOut()) {
+                System.out.println(book);
+                available++;
+            }
+        }
+        if (available == 0){
+            System.out.println("Sorry, no books available right now");
+        }
+
+    }
+
+    public static void showCheckedOutBooks(){
+        int out = 0;
+        System.out.println("ID ISBN              Title");
+        for (Book book : library) {
+            if (book.getCheckedOut()) {
+                System.out.println(book);
+                out++;
+            }
+
+        }
+        if (out == 0){
+            System.out.println("No books are checked out");
+        }
+
     }
 }
