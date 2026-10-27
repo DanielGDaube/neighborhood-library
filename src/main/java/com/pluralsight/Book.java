@@ -54,7 +54,7 @@ public class Book {
     // Checks out a book
     public void checkOut(String name){
         isCheckedOut = true;
-        checkedOutTo = "name";
+        checkedOutTo = name;
 
     }
     @Override

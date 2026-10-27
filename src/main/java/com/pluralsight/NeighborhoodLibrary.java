@@ -7,11 +7,11 @@ public class NeighborhoodLibrary {
     // Creates an array with 20 slots
     private static Book[] library = new Book[20];
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException{
 
         initializeLibrary();
 
-        // Loop that displays menu screen
+        // Loop that displays home menu screen
         boolean condition = true;
         while (condition) {
 
@@ -22,10 +22,18 @@ public class NeighborhoodLibrary {
             System.out.println("3 - Exit");
             System.out.println("--------------------------");
 
+            /* Inputting 1 brings user to available books menu
+             Inputting 2 brings user to checked out books menu
+             Inputting 3 quits the program
+             Any other input prints an error message*/
             switch (libraryScanner.nextInt()) {
                 case 1 -> showAvailableBooks(libraryScanner);
                 case 2 -> showCheckedOutBooks();
                 case 3 -> condition = false;
+                default -> {
+                    System.out.println("Error, not a valid option. Please try again.");
+                    Thread.sleep(1085);
+                }
             }
         }
     }
@@ -54,7 +62,9 @@ public class NeighborhoodLibrary {
         library[19] = new Book(20, "978-1-64-937929-0", "Fourth Wing", false, "");
     }
 
-    public static void showAvailableBooks(Scanner libraryScanner) {
+    /*Displays  alist of available books and takes the user to the available books menu
+     If no books are available it prints an error message and returns to the previous screen*/
+    public static void showAvailableBooks(Scanner libraryScanner) throws InterruptedException {
         int available = 0;
         boolean header = true;
         boolean condition = true;
@@ -69,29 +79,15 @@ public class NeighborhoodLibrary {
             }
         }
         if (available == 0) {
-            System.out.println("Sorry, no books available right now");
+            System.out.println("Sorry, no there are no books available right now");
+            Thread.sleep(1070);
         } else {
-            while (condition) {
-                System.out.println("--------------------------");
-                System.out.printf("Do you want to check out a book?%n%n");
-                System.out.println("1. Check out a book");
-                System.out.println("2. Go back");
-                System.out.println("--------------------------");
-
-                switch (libraryScanner.nextInt()) {
-                    case 1 -> {
-                        System.out.println("Please enter book ID:");
-                        libraryScanner.nextInt();
-                        System.out.println("Please enter your name:");
-                    }
-                    case 2 -> ;
-                }
-            }
-
+            availableBooksMenu();
         }
     }
 
-    public static void showCheckedOutBooks() {
+    // Displays a list of checked out books
+    public static void showCheckedOutBooks() throws InterruptedException {
         int out = 0;
         boolean header = true;
         for (Book book : library) {
@@ -100,13 +96,52 @@ public class NeighborhoodLibrary {
                     System.out.println("ID ISBN              Title");
                     header = false;
                 }
-                System.out.println(book);
+                System.out.println(book + " |" + " This book is checked out to " + book.getCheckedOutTo());
                 out++;
             }
 
         }
         if (out == 0) {
             System.out.println("No books are checked out");
+            Thread.sleep(1070);
+        }
+
+    }
+    /* Gives the user the option to either check out a book or return to the previous menu
+    An input of 1 will ask for a book ID and a name and then runs the book.checkOut() method
+    an input of 2 will return to the previous screen
+    any other input prints an error message*/
+    public static void availableBooksMenu() throws InterruptedException {
+        boolean condition = true;
+
+        while (condition) {
+            System.out.println("--------------------------");
+            System.out.printf("Do you want to check out a book?%n%n");
+            System.out.println("1. Check out a book");
+            System.out.println("2. Go back");
+            System.out.println("--------------------------");
+
+            switch (libraryScanner.nextInt()) {
+                case 1 -> {
+                    System.out.println("Please enter the books ID:");
+                    int inputId = libraryScanner.nextInt();
+                    libraryScanner.nextLine();
+                    System.out.println("Please enter your name:");
+                    String inputName = libraryScanner.nextLine();
+                    for (Book book : library) {
+                        if (book.getId() == inputId){
+                            book.checkOut(inputName);
+                            System.out.println("Thank you for checking out from our library");
+                            Thread.sleep(1080);
+                        }
+                    }
+                }
+                case 2 -> condition = false;
+                default -> {
+                    System.out.println("Error, not a valid option. Please try again.");
+                    Thread.sleep(1085);
+                }
+            }
         }
 
     }
