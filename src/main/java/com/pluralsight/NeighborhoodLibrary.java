@@ -9,34 +9,40 @@ public class NeighborhoodLibrary {
 
     public static void main(String[] args) throws InterruptedException{
 
-        initializeLibrary();
+            initializeLibrary();
 
-        // Loop that displays home menu screen
-        boolean condition = true;
-        while (condition) {
 
-            System.out.println("--------------------------");
-            System.out.printf("What would you like to do?%n%n");
-            System.out.println("1 - Show available books");
-            System.out.println("2 - Show checked out books");
-            System.out.println("3 - Exit");
-            System.out.println("--------------------------");
+            // Loop that displays home menu screen
+            boolean condition = true;
+            while (condition) {
 
+                    System.out.println("--------------------------");
+                    System.out.printf("What would you like to do?%n%n");
+                    System.out.println("1 - Show available books");
+                    System.out.println("2 - Show checked out books");
+                    System.out.println("3 - Exit");
+                    System.out.println("--------------------------");
+
+                    if (libraryScanner.hasNextInt()) {
             /* Inputting 1 brings user to available books menu
              Inputting 2 brings user to checked out books menu
              Inputting 3 quits the program
              Any other input prints an error message*/
-            switch (libraryScanner.nextInt()) {
-                case 1 -> showAvailableBooks(libraryScanner);
-                case 2 -> showCheckedOutBooks();
-                case 3 -> condition = false;
-                default -> {
-                    System.out.println("Error, not a valid option. Please try again.");
-                    Thread.sleep(1085);
-                }
+                        switch (libraryScanner.nextInt()) {
+                            case 1 -> showAvailableBooks();
+                            case 2 -> showCheckedOutBooks();
+                            case 3 -> condition = false;
+                            default -> menuError();
+                        }
+                    }
+                    else if (!libraryScanner.hasNextInt()){
+                        menuError();
+                        libraryScanner.nextLine();
+                    }
             }
+            libraryScanner.close();
         }
-    }
+
 
     // Preloads the array with entered books
     public static void initializeLibrary() {
@@ -64,10 +70,9 @@ public class NeighborhoodLibrary {
 
     /*Displays  alist of available books and takes the user to the available books menu
      If no books are available it prints an error message and returns to the previous screen*/
-    public static void showAvailableBooks(Scanner libraryScanner) throws InterruptedException {
+    public static void showAvailableBooks() throws InterruptedException {
         int available = 0;
         boolean header = true;
-        boolean condition = true;
         for (Book book : library) {
             if (!book.getCheckedOut()) {
                 if (header) {
@@ -103,7 +108,10 @@ public class NeighborhoodLibrary {
         }
         if (out == 0) {
             System.out.println("No books are checked out");
-            Thread.sleep(1070);
+            Thread.sleep(1050);
+        } else {
+            libraryScanner.nextLine();
+            checkedOutBooksMenu();
         }
 
     }
@@ -114,6 +122,7 @@ public class NeighborhoodLibrary {
     public static void availableBooksMenu() throws InterruptedException {
         boolean condition = true;
 
+        // loop displays menu options
         while (condition) {
             System.out.println("--------------------------");
             System.out.printf("Do you want to check out a book?%n%n");
@@ -121,29 +130,81 @@ public class NeighborhoodLibrary {
             System.out.println("2. Go back");
             System.out.println("--------------------------");
 
-            switch (libraryScanner.nextInt()) {
-                case 1 -> {
-                    System.out.println("Please enter the books ID:");
-                    int inputId = libraryScanner.nextInt();
-                    libraryScanner.nextLine();
-                    System.out.println("Please enter your name:");
-                    String inputName = libraryScanner.nextLine();
-                    for (Book book : library) {
-                        if (book.getId() == inputId){
-                            book.checkOut(inputName);
-                            System.out.println("Thank you for checking out from our library");
+            if (libraryScanner.hasNextInt()) {
+
+                switch (libraryScanner.nextInt()) {
+                    case 1 -> {
+                        System.out.println("Please enter the books ID:");
+                        int inputId = libraryScanner.nextInt();
+                        // Invalid ID returns an error
+                        if (inputId > library.length || inputId < 1 || library[inputId - 1].getCheckedOut()) {
+                            System.out.println("Invalid ID");
+                            Thread.sleep(1000);
+                        } else {
+                            libraryScanner.nextLine();
+                            System.out.println("Please enter your name:");
+                            String inputName = libraryScanner.nextLine();
+                            library[inputId - 1].checkOut(inputName);
+                            System.out.println("Thank you for checking out from the library!");
                             Thread.sleep(1080);
                         }
                     }
+                    case 2 -> condition = false;
+                    default -> menuError();
                 }
-                case 2 -> condition = false;
-                default -> {
-                    System.out.println("Error, not a valid option. Please try again.");
-                    Thread.sleep(1085);
-                }
+            } else if (libraryScanner.hasNextLine()) {
+                menuError();
+                libraryScanner.nextLine();
+
             }
+
         }
 
+    }
+    /* Gives the user the option to either check in a book or return to the previous menu
+    An input of c will ask for a book ID then runs the book.checkIn() method
+    an input of x will return to the previous screen
+    any other input prints an error message*/
+    public static void checkedOutBooksMenu() throws InterruptedException {
+        boolean condition = true;
+
+        // loop displays menu options
+        while (condition) {
+
+            System.out.println("--------------------------");
+            System.out.printf("Would you like to check in a book?%n%n");
+            System.out.println("C - Check in a book");
+            System.out.println("X - Go back");
+            System.out.println("--------------------------");
+
+            switch (libraryScanner.nextLine().toLowerCase()) {
+                case "c" -> {
+                    System.out.println("Please enter the books ID:");
+                    int inputId = libraryScanner.nextInt();
+                    // Invalid ID returns an error
+                    if (inputId >library.length || inputId <1 || !library[inputId - 1].getCheckedOut()){
+                        System.out.println("Invalid ID");
+                        Thread.sleep(1000);
+                        if (libraryScanner.hasNextLine()) {
+                            libraryScanner.nextLine();
+                        }
+                    }
+                    else{
+                        library[inputId-1].checkIn();
+                        System.out.println("Thank you for returning this book");
+                        Thread.sleep(1080);
+                        condition = false;
+                    }
+                }
+                case "x" -> condition = false;
+                default -> menuError();
+            }
+        }
+    }
+    // Method to display a common error message for invalid inputs on menus
+    public static void menuError() throws InterruptedException {
+        System.out.println("Error, not a valid option. Please try again.");
+        Thread.sleep(1085);
     }
 }
 
