@@ -23,7 +23,10 @@ public class NeighborhoodLibrary {
                     System.out.println("3 - Exit");
                     System.out.println("--------------------------");
 
-                    if (libraryScanner.hasNextInt()) {
+
+                  /*  First try and catch prevents crash on input mismatch
+                        Other two try and catch prevent looping back to main menu from sub menus*/
+                    try {
             /* Inputting 1 brings user to available books menu
              Inputting 2 brings user to checked out books menu
              Inputting 3 quits the program
@@ -35,10 +38,11 @@ public class NeighborhoodLibrary {
                             default -> menuError();
                         }
                     }
-                    else if (!libraryScanner.hasNextInt()){
+                    catch (Exception InputMismatchException){
                         menuError();
                         libraryScanner.nextLine();
                     }
+
             }
             libraryScanner.close();
         }
@@ -130,8 +134,7 @@ public class NeighborhoodLibrary {
             System.out.println("2. Go back");
             System.out.println("--------------------------");
 
-            if (libraryScanner.hasNextInt()) {
-
+            try {
                 switch (libraryScanner.nextInt()) {
                     case 1 -> {
                         System.out.println("Please enter the books ID:");
@@ -152,12 +155,11 @@ public class NeighborhoodLibrary {
                     case 2 -> condition = false;
                     default -> menuError();
                 }
-            } else if (libraryScanner.hasNextLine()) {
+            }
+            catch (Exception InputMismatchException){
                 menuError();
                 libraryScanner.nextLine();
-
             }
-
         }
 
     }
@@ -177,33 +179,39 @@ public class NeighborhoodLibrary {
             System.out.println("X - Go back");
             System.out.println("--------------------------");
 
-            switch (libraryScanner.nextLine().toLowerCase()) {
-                case "c" -> {
-                    System.out.println("Please enter the books ID:");
-                    int inputId = libraryScanner.nextInt();
-                    // Invalid ID returns an error
-                    if (inputId >library.length || inputId <1 || !library[inputId - 1].getCheckedOut()){
-                        System.out.println("Invalid ID");
-                        Thread.sleep(1000);
-                        if (libraryScanner.hasNextLine()) {
-                            libraryScanner.nextLine();
+
+            try {
+                switch (libraryScanner.nextLine().toLowerCase()) {
+                    case "c" -> {
+                        System.out.println("Please enter the books ID:");
+                        int inputId = libraryScanner.nextInt();
+                        // Invalid ID returns an error
+                        if (inputId > library.length || inputId < 1 || !library[inputId - 1].getCheckedOut()) {
+                            System.out.println("Invalid ID");
+                            Thread.sleep(1000);
+                            if (libraryScanner.hasNextLine()) {
+                                libraryScanner.nextLine();
+                            }
+                        } else {
+                            library[inputId - 1].checkIn();
+                            System.out.println("Thank you for returning this book");
+                            Thread.sleep(1080);
+                            condition = false;
                         }
                     }
-                    else{
-                        library[inputId-1].checkIn();
-                        System.out.println("Thank you for returning this book");
-                        Thread.sleep(1080);
-                        condition = false;
-                    }
+                    case "x" -> condition = false;
+                    default -> menuError();
                 }
-                case "x" -> condition = false;
-                default -> menuError();
+            }
+            catch (Exception InputMismatchException){
+                menuError();
+                libraryScanner.nextLine();
             }
         }
     }
     // Method to display a common error message for invalid inputs on menus
     public static void menuError() throws InterruptedException {
-        System.out.println("Error, not a valid option. Please try again.");
+        System.err.println("Error, not a valid option. Please try again.");
         Thread.sleep(1085);
     }
 }
