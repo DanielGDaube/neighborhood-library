@@ -181,7 +181,7 @@ public class NeighborhoodLibrary {
 
 
             try {
-                switch (libraryScanner.nextLine().toLowerCase()) {
+                switch (libraryScanner.next().toLowerCase()) {
                     case "c" -> {
                         System.out.println("Please enter the books ID:");
                         int inputId = libraryScanner.nextInt();
